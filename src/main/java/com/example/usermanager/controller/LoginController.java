@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +28,37 @@ public class LoginController {
         }
         User user=userService.getUserDetailsByEmail(login.getEmail());
         return new ResponseEntity<>(user,HttpStatus.OK);
+    }
+    @PutMapping("/user/update/email")
+    public ResponseEntity<?> updateUserEmail(@RequestParam("oldEmail") String oldEmail,
+                                             @RequestParam("newEmail") String newEmail) {
+        if (!userService.isUserExistsByEmail(oldEmail)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        if (userService.isUserExistsByEmail(newEmail)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New email already exists");
+        }
+
+        userService.updateUserEmail(oldEmail, newEmail);
+        return ResponseEntity.ok("Email updated successfully");
+    }
+
+    @PutMapping("/user/update/password")
+    public ResponseEntity<?> updateUserPassword(@RequestParam("email") String email,
+                                                @RequestParam("oldPassword") String oldPassword,
+                                                @RequestParam("newPassword") String newPassword) {
+        User user = userService.getUserByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        if (!BCrypt.checkpw(oldPassword, user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
+        }
+
+        String hashedNewPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+        userService.updateUserPassword(email, hashedNewPassword);
+        return ResponseEntity.ok("Password updated successfully");
     }
 }

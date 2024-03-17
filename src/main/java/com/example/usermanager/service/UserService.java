@@ -10,4 +10,12 @@ public interface UserService {
     public List<String>checkUserEmail(String email);
     public String checkUserPasswordByEmail(String email);
     public User getUserDetailsByEmail(String email);
+
+    User getUserByEmail(String email);
+
+    boolean isUserExistsByEmail(String oldEmail);
+
+    void updateUserEmail(String oldEmail, String newEmail);
+
+    void updateUserPassword(String email, String hashedNewPassword);
 }

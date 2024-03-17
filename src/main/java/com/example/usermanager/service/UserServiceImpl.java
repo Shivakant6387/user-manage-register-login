@@ -33,4 +33,24 @@ public class UserServiceImpl implements UserService {
     public User getUserDetailsByEmail(String email) {
         return userRepository.getUserDetailsByEmail(email);
     }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.getUserDetailsByEmail(email);
+    }
+
+    @Override
+    public boolean isUserExistsByEmail(String email) {
+        return userRepository.checkUserEmail(email).size() > 0;
+    }
+
+    @Override
+    public void updateUserEmail(String oldEmail, String newEmail) {
+        userRepository.updateUserEmail(oldEmail, newEmail);
+    }
+
+    @Override
+    public void updateUserPassword(String email, String hashedNewPassword) {
+        userRepository.updateUserPassword(email, hashedNewPassword);
+    }
 }
