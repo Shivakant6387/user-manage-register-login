@@ -7,9 +7,15 @@ import java.util.List;
 
 public interface UserService {
     public int registerNewUserServiceMethod(String fName, String lName, String email, String password, Date created_at);
-    public List<String>checkUserEmail(String email);
+
+    public List<String> checkUserEmail(String email);
+
     public String checkUserPasswordByEmail(String email);
+
     public User getUserDetailsByEmail(String email);
+
+    void deleteUserByEmailAndPassword(String email, String password);
+
 
     User getUserByEmail(String email);
 

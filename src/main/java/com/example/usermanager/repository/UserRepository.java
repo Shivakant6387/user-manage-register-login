@@ -32,9 +32,9 @@ public interface UserRepository extends CrudRepository<User, Integer> {
                         @Param("password") String password,
                         @Param("created_at") Date created_at);
     @Modifying
-    @Query(value = "UPDATE users SET email = :newEmail WHERE email = :oldEmail", nativeQuery = true)
-    void updateUserEmail(@Param("oldEmail") String oldEmail, @Param("newEmail") String newEmail);
+    @Query(value = "UPDATE users SET email = :newEmail WHERE email = :oldEmail,updated_at=:updated_at", nativeQuery = true)
+    void updateUserEmail(@Param("oldEmail") String oldEmail, @Param("newEmail") String newEmail,@Param("updated_at")Date updated_at);
     @Modifying
-    @Query(value = "UPDATE users SET password = :password WHERE email = :email", nativeQuery = true)
-    void updateUserPassword(@Param("email") String email, @Param("password") String hashedNewPassword);
+    @Query(value = "UPDATE users SET password = :password WHERE email = :email,updated_at=:updated_at", nativeQuery = true)
+    void updateUserPassword(@Param("email") String email, @Param("password") String hashedNewPassword,@Param("updated_at")Date updated_at);
 }

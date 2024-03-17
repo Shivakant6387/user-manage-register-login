@@ -16,19 +16,21 @@ import java.util.List;
 public class LoginController {
     @Autowired
     private UserService userService;
+
     @PostMapping("/user/login")
-    public ResponseEntity authenticationUser(@RequestBody Login login){
-        List<String>userEmail=userService.checkUserEmail(login.getEmail());
-        if (userEmail.isEmpty()||userEmail==null){
+    public ResponseEntity authenticationUser(@RequestBody Login login) {
+        List<String> userEmail = userService.checkUserEmail(login.getEmail());
+        if (userEmail.isEmpty() || userEmail == null) {
             return new ResponseEntity<>("Email does not exist", HttpStatus.NOT_FOUND);
         }
-        String hashed_password=userService.checkUserPasswordByEmail(login.getEmail());
-        if (!BCrypt.checkpw(login.getPassword(),hashed_password)){
-            return new ResponseEntity<>("Incorrect username or password",HttpStatus.BAD_REQUEST);
+        String hashed_password = userService.checkUserPasswordByEmail(login.getEmail());
+        if (!BCrypt.checkpw(login.getPassword(), hashed_password)) {
+            return new ResponseEntity<>("Incorrect username or password", HttpStatus.BAD_REQUEST);
         }
-        User user=userService.getUserDetailsByEmail(login.getEmail());
-        return new ResponseEntity<>(user,HttpStatus.OK);
+        User user = userService.getUserDetailsByEmail(login.getEmail());
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
     @PutMapping("/user/update/email")
     public ResponseEntity<?> updateUserEmail(@RequestParam("oldEmail") String oldEmail,
                                              @RequestParam("newEmail") String newEmail) {
@@ -60,5 +62,18 @@ public class LoginController {
         String hashedNewPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
         userService.updateUserPassword(email, hashedNewPassword);
         return ResponseEntity.ok("Password updated successfully");
+    }
+
+    @DeleteMapping("/user/delete")
+    public ResponseEntity<?> deleteUserByEmailAndPassword(@RequestParam("email") String email,
+                                                          @RequestParam("password") String password) {
+        try {
+            userService.deleteUserByEmailAndPassword(email, password);
+            return ResponseEntity.ok("User deleted successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+        }
     }
 }

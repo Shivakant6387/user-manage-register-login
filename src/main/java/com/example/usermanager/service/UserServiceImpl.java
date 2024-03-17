@@ -4,6 +4,7 @@ import com.example.usermanager.entity.User;
 import com.example.usermanager.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -16,7 +17,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int registerNewUserServiceMethod(String fName, String lName, String email, String password, Date created_at) {
-        return userRepository.registerNewUser(fName, lName, email, password,created_at);
+        return userRepository.registerNewUser(fName, lName, email, password, created_at);
     }
 
     @Override
@@ -46,11 +47,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserEmail(String oldEmail, String newEmail) {
-        userRepository.updateUserEmail(oldEmail, newEmail);
+        Date updated_at = new Date();
+        userRepository.updateUserEmail(oldEmail, newEmail, updated_at);
     }
 
     @Override
     public void updateUserPassword(String email, String hashedNewPassword) {
-        userRepository.updateUserPassword(email, hashedNewPassword);
+        Date updated_at = new Date();
+        userRepository.updateUserPassword(email, hashedNewPassword, updated_at);
+    }
+
+    @Override
+    public void deleteUserByEmailAndPassword(String email, String password) {
+        User user = userRepository.getUserDetailsByEmail(email);
+        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
+            userRepository.delete(user);
+        } else {
+            throw new IllegalArgumentException("Invalid email or password");
+        }
     }
 }
