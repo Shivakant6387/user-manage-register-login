@@ -14,9 +14,6 @@ public interface UserService {
 
     public User getUserDetailsByEmail(String email);
 
-    void deleteUserByEmailAndPassword(String email, String password);
-
-
     User getUserByEmail(String email);
 
     boolean isUserExistsByEmail(String oldEmail);
@@ -24,4 +21,6 @@ public interface UserService {
     void updateUserEmail(String oldEmail, String newEmail);
 
     void updateUserPassword(String email, String hashedNewPassword);
+    void deleteUserByEmailAndPassword(String email, String password);
+
 }

@@ -31,7 +31,7 @@ public class LoginController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PutMapping("/user/update/email")
+    @PutMapping("/user/update/email{email}")
     public ResponseEntity<?> updateUserEmail(@RequestParam("oldEmail") String oldEmail,
                                              @RequestParam("newEmail") String newEmail) {
         if (!userService.isUserExistsByEmail(oldEmail)) {
@@ -46,7 +46,7 @@ public class LoginController {
         return ResponseEntity.ok("Email updated successfully");
     }
 
-    @PutMapping("/user/update/password")
+    @PutMapping("/user/update/password{email}")
     public ResponseEntity<?> updateUserPassword(@RequestParam("email") String email,
                                                 @RequestParam("oldPassword") String oldPassword,
                                                 @RequestParam("newPassword") String newPassword) {

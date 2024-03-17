@@ -23,6 +23,9 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     @Query(value = "SELECT * FROM users WHERE email=:email", nativeQuery = true)
     User getUserDetailsByEmail(@Param("email") String email);
 
+    @Query(value = "SELECT * FROM users WHERE email=:email", nativeQuery = true)
+    User getUserByEmail(@Param("email") String email);
+
     @Transactional
     @Modifying
     @Query(value = "INSERT INTO USERS (first_name, last_name, email, password, created_at) VALUES (:first_name, :last_name, :email, :password,:created_at)", nativeQuery = true)
@@ -31,10 +34,15 @@ public interface UserRepository extends CrudRepository<User, Integer> {
                         @Param("email") String email,
                         @Param("password") String password,
                         @Param("created_at") Date created_at);
+
+    @Transactional
     @Modifying
-    @Query(value = "UPDATE users SET email = :newEmail WHERE email = :oldEmail,updated_at=:updated_at", nativeQuery = true)
-    void updateUserEmail(@Param("oldEmail") String oldEmail, @Param("newEmail") String newEmail,@Param("updated_at")Date updated_at);
+    @Query(value = "UPDATE users SET email = :newEmail, updated_at = :updated_at WHERE email = :oldEmail", nativeQuery = true)
+    void updateUserEmail(@Param("oldEmail") String oldEmail, @Param("newEmail") String newEmail, @Param("updated_at") Date updated_at);
+
+    @Transactional
     @Modifying
-    @Query(value = "UPDATE users SET password = :password WHERE email = :email,updated_at=:updated_at", nativeQuery = true)
-    void updateUserPassword(@Param("email") String email, @Param("password") String hashedNewPassword,@Param("updated_at")Date updated_at);
+    @Query(value = "UPDATE users SET password = :password, updated_at = :updated_at WHERE email = :email", nativeQuery = true)
+    void updateUserPassword(@Param("email") String email, @Param("password") String hashedNewPassword, @Param("updated_at") Date updated_at);
+
 }

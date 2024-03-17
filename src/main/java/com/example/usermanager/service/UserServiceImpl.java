@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserByEmailAndPassword(String email, String password) {
-        User user = userRepository.getUserDetailsByEmail(email);
+        User user = userRepository.getUserByEmail(email);
         if (user != null && BCrypt.checkpw(password, user.getPassword())) {
             userRepository.delete(user);
         } else {
